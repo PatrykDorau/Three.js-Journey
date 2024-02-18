@@ -1,8 +1,36 @@
 import * as THREE from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from "gsap";
+import * as dat from 'dat.gui';
+
 
 const canvas = document.querySelector("canvas.webgl");
+
+//Params
+const cube1_parameters = {
+  color: 0x721ede,
+  spin: () => {
+    gsap.to(cube1.rotation, {x: cube1.rotation.x + Math.PI * 2, duration: 1})
+  }
+}
+
+//Textures
+  const loadingManager = new THREE.LoadingManager();
+
+  // loadingManager.onStart = () => {
+  //   console.log("start")
+  // };
+
+  const txLoader= new THREE.TextureLoader(loadingManager);
+  const woodTexture = txLoader.load('./assets/images/wood.jpeg' ,() => {
+    console.log("Texture image loaded")
+  })
+
+  woodTexture.generateMipmaps = false; /* False when using woodTexture.minFilter = THREE.NearestFilter for perfomance*/
+
+  woodTexture.minFilter = THREE.NearestFilter
+  woodTexture.magFilter = THREE.NearestFilter
+
 
 //Cursor
 const cursor = {
@@ -21,13 +49,9 @@ const scene = new THREE.Scene();
 //Objects
 const group = new THREE.Group();
 
-const vertex1 = new THREE.Vector3(0,0,0);
-const geometry = new THREE.BufferGeometry();
-// geometry.mergeVertices(vertex1);
-
 scene.add(group);
-const cube1 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:"blue"}));
-const cube2 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:"red"}));
+const cube1 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:cube1_parameters.color}));
+const cube2 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({map: woodTexture}));
 
 cube2.position.set(1, 1,-2)
 
@@ -109,3 +133,16 @@ const tick = () => {
 }
 
 tick();
+
+
+// Debug
+
+const gui = new dat.GUI();
+gui.add(cube1.position, 'y', -3, 3, 0.01)
+gui.add(cube1.position, 'x').min(-3).max(3).step(0.01)
+gui.add(cube2, 'visible');
+gui.add(cube1.material, 'wireframe');
+gui.addColor(cube1_parameters, 'color').onChange(() => {
+  cube1.material.color.set(cube1_parameters.color)
+})
+gui.add(cube1_parameters, 'spin');
