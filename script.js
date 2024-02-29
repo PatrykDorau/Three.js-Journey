@@ -52,7 +52,6 @@ const group = new THREE.Group();
 scene.add(group);
 const cube1 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:cube1_parameters.color}));
 const cube2 = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({map: woodTexture}));
-
 cube2.position.set(1, 1,-2)
 
 group.add(cube1, cube2);
@@ -108,10 +107,10 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.render(scene, camera);
 
-// //Time
+//Time
 const clock = new THREE.Clock();
 
-//Gsap animations
+// Gsap animations
 gsap.to(cube2.position, {duration: 1, delay: 0, x: 2})
 gsap.to(cube2.position, {duration: 1, delay: 1, x: 1})
 
@@ -125,7 +124,7 @@ const tick = () => {
   // camera.position.y = cursor.y * 5;
   // camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3
   // camera.position.z = Math.cos(cursor.x * Math.PI * 2) * 3
-  // camera.lookAt(cube1.position)
+  camera.lookAt(cube1.position)
 
   controls.update();
   renderer.render(scene, camera);
@@ -136,7 +135,6 @@ tick();
 
 
 // Debug
-
 const gui = new dat.GUI();
 gui.add(cube1.position, 'y', -3, 3, 0.01)
 gui.add(cube1.position, 'x').min(-3).max(3).step(0.01)
