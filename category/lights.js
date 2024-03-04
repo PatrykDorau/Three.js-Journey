@@ -23,7 +23,7 @@ const scene = new THREE.Scene()
 2. directional, point
 3. spot, rect
 
-Sometimes lights rekt performance, to overcome it, we can put shadows directly inside image/model.
+Sometimes lights rekt performance, to overcome it, we can put LIGHTS directly inside image/model.
 
 */
 
