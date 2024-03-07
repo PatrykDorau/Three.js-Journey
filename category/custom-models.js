@@ -29,10 +29,6 @@ gltfLoader.load(
     "./assets/models/Fox/glTF/Fox.gltf",
     (gltf) => {
         console.log("success", gltf)
-        // const modelParts = [...gltf.scene.children]
-        // modelParts.forEach((part) => {
-        //         scene.add(part)
-        // })
         mixer = new THREE.AnimationMixer(gltf.scene); //Mixer needs to be updated in tick
         const action = mixer.clipAction(gltf.animations[2]);
 
@@ -58,6 +54,7 @@ gltfLoader.load(
         // modelParts.forEach((part) => {
         //         scene.add(part)
         // })
+        gltf.scene.position.set(1.5, 0.1, 2.5)
         scene.add(gltf.scene)
     },
     (pr) => {
