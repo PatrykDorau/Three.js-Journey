@@ -1,7 +1,10 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
-import CANNON from "cannon"
+import * as CANNON from "cannon-es"
+
+//Better to use ammo.js because it has more options
+
 
 /**
  * Base
@@ -11,6 +14,23 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Sounds
+ */
+
+const hitSound = new Audio('./assets/sounds/hit.mp3')
+
+const playHitSound = (collision) => {
+    const impactStrength = collision.contact.getImpactVelocityAlongNormal()
+
+    if(impactStrength > 1.5) {
+        hitSound.volume = Math.min(1, Math.max(0, impactStrength / 10));
+        hitSound.currentTime = 0;
+        hitSound.play()
+    }
+}
+
 
 /**
  * Textures
@@ -33,7 +53,8 @@ const environmentMapTexture = cubeTextureLoader.load([
 
 //World
 const world = new CANNON.World();
-world.broadphase = new CANNON.SAPBroadphase(world);
+world.broadphase = new CANNON.SAPBroadphase(world); //Very good for performance, might cause bugs with physics when something is traveling too fast
+world.allowSleep = true; //Very good for performance
 world.gravity.set(0, -9.82, 0)
 
 //Materials
@@ -159,6 +180,7 @@ const createSphere = (radius, position) => {
         material: defaultMaterial
     })
     body.position.copy(position);
+    body.addEventListener("collide", playHitSound);
     world.addBody(body);
 
     objectsToUpdate.push({mesh: mesh, body: body});
@@ -191,6 +213,7 @@ const createBox = (width, height, depth, position) => {
         material: defaultMaterial
     })
     body.position.copy(position);
+    body.addEventListener("collide", playHitSound);
     world.addBody(body);
 
     objectsToUpdate.push({mesh: mesh, body: body});
@@ -245,7 +268,17 @@ const debugObject = {
     createBox: () => {
         createBox(Math.random(), Math.random(), Math.random(), {x: (Math.random() - 0.5) * 3, y: 3, z:(Math.random() - 0.5) * 3})
     },
+    reset: () => {
+        objectsToUpdate.forEach((object) => {
+            object.body.removeEventListener("collide", playHitSound);
+            world.removeBody(object.body);
+
+            scene.remove(object.mesh)
+        })
+        objectsToUpdate.splice(0, objectsToUpdate.length)
+    }
 };
 gui.add(debugObject, "createSphere");
 gui.add(debugObject, "createBox");
+gui.add(debugObject, "reset");
 
