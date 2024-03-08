@@ -20,7 +20,7 @@ const scene = new THREE.Scene()
  * Models
  */
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath("./draco/");
+dracoLoader.setDecoderPath("./draco/"); // worker to use another thread of cpu
 const gltfLoader = new GLTFLoader()
 gltfLoader.setDRACOLoader(dracoLoader);
 
