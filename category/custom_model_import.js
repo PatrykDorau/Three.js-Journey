@@ -45,6 +45,8 @@ bakedTextures.colorSpace = THREE.SRGBColorSpace;
 
 const bakedMaterial = new THREE.MeshBasicMaterial({map: bakedTextures})
 
+const windowLightMaterial = new THREE.MeshBasicMaterial({color: '#AE650B'})
+
 /**
  * Object
  */
